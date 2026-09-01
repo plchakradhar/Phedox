@@ -1,0 +1,11 @@
+.stock-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.stock-badge.in-stock { background-color: var(--success-light); color: var(--success-dark); border: 1px solid var(--success-border); }
+.stock-badge.low-stock { background-color: var(--gold-accent-light); color: #805d00; border: 1px solid var(--gold-accent-border); }
+.stock-badge.out-stock { background-color: var(--primary-light); color: var(--primary); border: 1px solid rgba(217, 0, 0, 0.25); }

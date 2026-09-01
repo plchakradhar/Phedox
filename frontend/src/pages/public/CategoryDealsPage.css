@@ -1,0 +1,44 @@
+.mp-page {
+  padding-bottom: 3rem;
+}
+.mp-section {
+  margin-top: 1.5rem;
+}
+.mp-section-pad {
+  padding: 0 1.5rem;
+}
+.mp-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0;
+}
+.mp-section-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.mp-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+.mp-view-all:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .mp-section {
+    margin-top: 1rem;
+  }
+  .mp-section-pad {
+    padding: 0 0.5rem;
+  }
+  .mp-section-header {
+    padding: 0;
+    margin-bottom: 0.75rem;
+  }
+}

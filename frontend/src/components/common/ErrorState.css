@@ -1,0 +1,39 @@
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background-color: var(--danger-light);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-xl);
+  margin: 1.5rem 0;
+}
+
+.error-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background-color: #fee2e2;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.error-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #991b1b;
+  margin-bottom: 0.4rem;
+}
+
+.error-desc {
+  font-size: 0.9rem;
+  color: #b91c1c;
+  max-width: 440px;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}

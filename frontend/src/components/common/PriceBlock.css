@@ -1,0 +1,66 @@
+.card-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.card-price-block .price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.card-price-block .current-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #000000;
+  letter-spacing: -0.3px;
+}
+
+.card-price-block .original-price {
+  font-size: 0.82rem;
+  color: #888888;
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.card-price-block .discount-tag {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #8DB355;
+  letter-spacing: -0.2px;
+}
+
+.card-price-block.size-sm .current-price { font-size: 1rem; }
+.card-price-block.size-sm .original-price { font-size: 0.75rem; }
+.card-price-block.size-sm .discount-tag { font-size: 0.75rem; }
+
+.card-price-block.size-lg .current-price { font-size: 1.95rem; }
+.card-price-block.size-lg .original-price { font-size: 1.05rem; }
+.card-price-block.size-lg .discount-tag { font-size: 1.05rem; }
+
+.card-price-block .savings-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8DB355;
+  margin-top: 0.1rem;
+}
+
+@media (max-width: 600px) {
+  .card-price-block .price-row {
+    gap: 0.3rem;
+  }
+  .card-price-block .current-price {
+    font-size: 0.95rem;
+  }
+  .card-price-block .original-price {
+    font-size: 0.72rem;
+  }
+  .card-price-block .discount-tag {
+    font-size: 0.72rem;
+  }
+  .card-price-block .savings-tag {
+    font-size: 0.65rem;
+  }
+}

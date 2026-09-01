@@ -1,0 +1,6 @@
+.admin-settings-page {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

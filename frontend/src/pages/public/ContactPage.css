@@ -1,0 +1,20 @@
+.contact-page-hero {
+  text-align: center;
+  margin: 2rem auto 3.5rem;
+  max-width: 700px;
+}
+.contact-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+.contact-form-container {
+  max-width: 640px;
+  margin: 0 auto 4rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}

@@ -1,0 +1,95 @@
+/* ==========================================================================
+   Phedox Global CSS Design Tokens & Theme Variables
+   Color Palette:
+   - Primary Crimson: #D90000
+   - Warm Pale Gold:   #FFEA93
+   - Olive-Sage Green: #8DB355
+   - Deep Onyx Black:  #000000
+   ========================================================================== */
+
+:root {
+  /* ── 1. Brand Primary (Crimson Deal Red) ── */
+  --primary: #D90000;
+  --primary-hover: #b80000;
+  --primary-dark: #8c0000;
+  --primary-light: #fff1f1;
+  --primary-subtle: #fee5e5;
+  --primary-glow: rgba(217, 0, 0, 0.22);
+
+  /* ── 2. Secondary & Warm Accent (Pale Gold / Cream) ── */
+  --gold-accent: #FFEA93;
+  --gold-accent-hover: #fce270;
+  --gold-accent-dark: #805d00;
+  --gold-accent-light: #fffdf5;
+  --gold-accent-border: #f5df82;
+  --gold-accent-glow: rgba(255, 234, 147, 0.45);
+
+  --accent: #FFEA93;
+  --accent-hover: #fce270;
+  --accent-light: #fffdf5;
+
+  /* Deal Red Aliases */
+  --deal-red: #D90000;
+  --deal-red-light: #fff1f1;
+  --deal-red-dark: #b80000;
+
+  /* ── 3. Success & Discount Green (Olive-Sage Green) ── */
+  --success: #8DB355;
+  --success-hover: #7ba046;
+  --success-dark: #587431;
+  --success-light: #f2f7ec;
+  --success-border: rgba(141, 179, 85, 0.35);
+
+  --warning: #eab308;
+  --warning-light: #fefce8;
+  --danger: #D90000;
+  --danger-light: #fff1f1;
+  --info: #0284c7;
+  --info-light: #f0f9ff;
+
+  /* ── 4. Deep Neutrals & Pitch Black (#000000) ── */
+  --black: #000000;
+  --black-surface: #111111;
+  --black-card: #181818;
+  --black-border: #262626;
+
+  --bg-main: #f7f8fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f3f6;
+  --bg-muted: #e5e7eb;
+
+  --text-main: #000000;
+  --text-secondary: #2d2d2d;
+  --text-muted: #666666;
+  --text-subtle: #999999;
+  --text-inverse: #ffffff;
+
+  --border: #e2e4e8;
+  --border-focus: #D90000;
+
+  /* ── Typography ── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 18px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* ── Radii ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Layout & Transitions ── */
+  --header-height: 68px;
+  --admin-sidebar-width: 260px;
+  --max-width: 1360px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

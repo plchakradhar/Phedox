@@ -1,0 +1,7 @@
+.search-results-page {
+  padding: 1.5rem 0 3.5rem;
+}
+.search-query-highlight {
+  color: var(--primary);
+  font-weight: 700;
+}

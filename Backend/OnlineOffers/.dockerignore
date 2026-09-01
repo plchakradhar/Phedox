@@ -1,0 +1,7 @@
+target/
+.mvn/
+.git/
+.settings/
+.project
+.classpath
+uploads/

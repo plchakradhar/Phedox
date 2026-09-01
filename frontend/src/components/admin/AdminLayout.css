@@ -1,0 +1,22 @@
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f1f5f9;
+}
+
+.admin-main-panel {
+  flex: 1;
+  margin-left: var(--admin-sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.admin-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .admin-main-panel { margin-left: 0; }
+}
