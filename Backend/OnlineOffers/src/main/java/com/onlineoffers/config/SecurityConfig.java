@@ -46,12 +46,9 @@ public class SecurityConfig {
                         // 1. CORS Preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // 2. Read-only Public Customer Endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/marketplaces/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/clicks/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+                        // 2. Read-only Public Customer Endpoints (GET & HEAD)
+                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**", "/api/marketplaces/**", "/api/clicks/**", "/uploads/**", "/api/health").permitAll()
+                        .requestMatchers(HttpMethod.HEAD, "/api/products/**", "/api/categories/**", "/api/marketplaces/**", "/api/clicks/**", "/uploads/**", "/api/health").permitAll()
 
                         // 3. Admin Authentication Endpoint (Public)
                         .requestMatchers("/api/admin/auth/**").permitAll()
