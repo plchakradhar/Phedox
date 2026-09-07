@@ -375,18 +375,33 @@ public class ProductProcessingService {
         return existingProduct;
     }
 
+    private boolean isPlaceholderTitle(String name) {
+        if (name == null || name.isBlank()) return true;
+        String lower = name.toLowerCase(Locale.ROOT).trim();
+        return lower.equals("special deal product")
+                || lower.equals("special deal offer")
+                || lower.equals("amazon deal product")
+                || lower.equals("amazon deal offer")
+                || lower.equals("flipkart deal offer")
+                || lower.equals("flipkart deal product")
+                || lower.contains("deal product")
+                || lower.contains("deal offer");
+    }
+
     private ScrapedProductData mergeProductData(ScrapedProductData scraped, ScrapedProductData telegram, String productUrl) {
         ScrapedProductData merged = new ScrapedProductData();
         merged.setProductUrl(productUrl);
         merged.setInStock(true);
 
         // Name
-        if (scraped != null && scraped.getName() != null && !scraped.getName().isBlank() && !scraped.getName().contains("Deal Product") && !scraped.getName().contains("Deal Offer")) {
+        if (scraped != null && !isPlaceholderTitle(scraped.getName())) {
             merged.setName(scraped.getName());
-        } else if (telegram != null && telegram.getName() != null && !telegram.getName().isBlank()) {
+        } else if (telegram != null && !isPlaceholderTitle(telegram.getName())) {
             merged.setName(telegram.getName());
         } else if (scraped != null && scraped.getName() != null && !scraped.getName().isBlank()) {
             merged.setName(scraped.getName());
+        } else if (telegram != null && telegram.getName() != null && !telegram.getName().isBlank()) {
+            merged.setName(telegram.getName());
         } else {
             merged.setName("Special Deal Offer");
         }

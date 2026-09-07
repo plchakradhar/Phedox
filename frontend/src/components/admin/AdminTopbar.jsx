@@ -28,6 +28,7 @@ export const AdminTopbar = ({ title, onMenuToggle }) => {
         <Link
           to="/"
           target="_blank"
+          rel="noopener noreferrer"
           className="btn btn-secondary btn-sm"
           style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
         >

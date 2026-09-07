@@ -65,7 +65,7 @@ export const ContactPage = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Email Address</div>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>support@phedox.com</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>support@phedox.local</div>
                 </div>
               </div>
 

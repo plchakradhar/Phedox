@@ -65,6 +65,17 @@ public class TelegramDealPipelineTest {
     }
 
     @Test
+    public void testParserWithShortNumberFormatAndFlipkartCoLink() {
+        String msg = "479\n\nhttps://fkrt.co/TBdf7x";
+
+        ScrapedProductData data = parser.parse(msg);
+        Assertions.assertNotNull(data);
+        Assertions.assertEquals(new BigDecimal("479"), data.getCurrentPrice());
+        Assertions.assertEquals("https://fkrt.co/TBdf7x", data.getProductUrl());
+        Assertions.assertEquals("FLIPKART", parser.detectMarketplace(data.getProductUrl()));
+    }
+
+    @Test
     @Transactional
     public void testEndToEndTelegramIngestionAndDealsFetch() {
         TelegramPost post = new TelegramPost();

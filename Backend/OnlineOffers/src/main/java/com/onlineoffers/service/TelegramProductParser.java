@@ -28,15 +28,21 @@ public class TelegramProductParser {
             Pattern.CASE_INSENSITIVE
     );
 
-    // Matches explicit Deal price labels like "Deal Price: 1499", "Now: 999", "Offer: 799", "Pay: 499", "@ 999", "At 1499"
+    // Matches explicit Deal price labels like "Deal Price: 1499", "Now: 999", "Offer: 799", "Pay: 499", "@ 999", "At 1499", "Flat 479", "Loot 479"
     private static final Pattern EXPLICIT_DEAL_PRICE_PATTERN = Pattern.compile(
-            "(?:deal\\s*price|offer\\s*price|special\\s*price|loot\\s*price|final\\s*price|now\\s*at|pay\\s*only|pay|buy\\s*at)[\\s:=-]*₹?\\s*(?:rs\\.?|inr)?\\s*\\b([0-9]{1,3}(?:,[0-9]{3})+(?:\\.[0-9]{1,2})?|[0-9]+(?:\\.[0-9]{1,2})?)\\b(?!\\s*%)",
+            "(?:deal\\s*price|offer\\s*price|special\\s*price|loot\\s*price|final\\s*price|now\\s*at|pay\\s*only|pay|buy\\s*at|flat|loot|just|now)\\s*₹?\\s*(?:rs\\.?|inr)?\\s*\\b([0-9]{1,3}(?:,[0-9]{3})+(?:\\.[0-9]{1,2})?|[0-9]+(?:\\.[0-9]{1,2})?)\\b(?!\\s*%)",
             Pattern.CASE_INSENSITIVE
     );
 
-    // General price matcher (finds any ₹1,499 or Rs. 1499 or Rs 1499 or 1499/- or @ 11999)
+    // General price matcher (finds any ₹1,499 or Rs. 1499 or 1499/- or 1499 Rs or @ 11999)
     private static final Pattern ALL_PRICES_PATTERN = Pattern.compile(
-            "(?:₹|rs\\.?|inr|@)\\s*\\b([0-9]{1,3}(?:,[0-9]{3})+(?:\\.[0-9]{1,2})?|[0-9]{2,8}(?:\\.[0-9]{1,2})?)\\b(?!\\s*%)",
+            "(?:(?:₹|rs\\.?|inr|@)\\s*\\b([0-9]{1,3}(?:,[0-9]{3})+(?:\\.[0-9]{1,2})?|[0-9]{2,8}(?:\\.[0-9]{1,2})?)\\b|\\b([0-9]{1,3}(?:,[0-9]{3})+(?:\\.[0-9]{1,2})?|[0-9]{2,8}(?:\\.[0-9]{1,2})?)\\s*(?:/-|rs\\.?|inr|only)\\b)(?!\\s*%)",
+            Pattern.CASE_INSENSITIVE
+    );
+
+    // Standalone line containing primarily a price number (e.g. "479", "  1499  ", "🔥 479", "479/-")
+    private static final Pattern STANDALONE_PRICE_LINE_PATTERN = Pattern.compile(
+            "(?m)^[\\s*•🔥⚡💥👉👉🏻✅⭐\\-–—#|]*₹?\\s*(?:rs\\.?|inr)?\\s*([0-9]{2,7}(?:\\.[0-9]{1,2})?)\\s*(?:/-)?\\s*$",
             Pattern.CASE_INSENSITIVE
     );
 
@@ -126,8 +132,8 @@ public class TelegramProductParser {
         String candidate = "Special Deal Product";
         for (String rawLine : lines) {
             String line = rawLine.trim();
-            // Skip lines that are only URLs, hashtags, or buy prompts
-            if (line.isEmpty() || line.startsWith("http") || line.matches("(?i)^(link|buy|loot|order|shop|deal|check).*https?://.*")) {
+            // Skip lines that are only URLs, hashtags, standalone numbers, or buy prompts
+            if (line.isEmpty() || line.startsWith("http") || line.matches("^[0-9\\s₹,./\\-–—#|]+$") || line.matches("(?i)^(link|buy|loot|order|shop|deal|check).*https?://.*")) {
                 continue;
             }
             // Clean emojis, leading bullets, sale tags
@@ -135,13 +141,18 @@ public class TelegramProductParser {
                     .replaceAll("(?i)\\b(loot deal|mega deal|hot deal|drop|flat|hurry|lowest price ever|special offer)[:!\\s]*", "")
                     .trim();
 
-            if (cleaned.length() >= 6) {
+            if (cleaned.length() >= 3 && !cleaned.matches("^[0-9\\s₹,./\\-–—#|]+$")) {
                 candidate = cleaned;
                 break;
             }
         }
         return candidate.length() > 200 ? candidate.substring(0, 200) : candidate;
     }
+
+    private static final Pattern DOMAIN_URL_PATTERN = Pattern.compile(
+            "\\b((?:www\\.)?(?:amzn\\.(?:to|in)|fkrt\\.(?:it|co)|extrape\\.com|bit\\.ly|cutt\\.ly|tinyurl\\.com|amazon\\.(?:in|com)|flipkart\\.com|myntra\\.com|meesho\\.com|ajio\\.com|shopsy\\.in|tatacliq\\.com|croma\\.com|nykaa\\.com|jiomart\\.com|snapdeal\\.com)/[^\\s<>\"'\\[\\]()]+)",
+            Pattern.CASE_INSENSITIVE
+    );
 
     public List<String> extractLinks(String text) {
         List<String> links = new ArrayList<>();
@@ -152,10 +163,20 @@ public class TelegramProductParser {
         Matcher matcher = URL_PATTERN.matcher(text);
         while (matcher.find()) {
             String url = matcher.group(1).trim().replaceAll("[),.!?;:\\]\\[]+$", "");
-            if (!url.isBlank()) {
+            if (!url.isBlank() && !links.contains(url)) {
                 links.add(url);
             }
         }
+
+        Matcher domainMatcher = DOMAIN_URL_PATTERN.matcher(text);
+        while (domainMatcher.find()) {
+            String rawUrl = domainMatcher.group(1).trim().replaceAll("[),.!?;:\\]\\[]+$", "");
+            String url = rawUrl.startsWith("http") ? rawUrl : "https://" + rawUrl;
+            if (!url.isBlank() && !links.contains(url)) {
+                links.add(url);
+            }
+        }
+
         return links;
     }
 
@@ -172,7 +193,7 @@ public class TelegramProductParser {
         if (lower.contains("amazon.") || lower.contains("amzn.to") || lower.contains("amzn.in")) {
             return MarketplaceType.AMAZON.name();
         }
-        if (lower.contains("flipkart.") || lower.contains("fkrt.it") || lower.contains("dl.flipkart.com")) {
+        if (lower.contains("flipkart.") || lower.contains("fkrt.it") || lower.contains("fkrt.co") || lower.contains("dl.flipkart.com")) {
             return MarketplaceType.FLIPKART.name();
         }
         if (lower.contains("myntra.")) {
@@ -239,17 +260,49 @@ public class TelegramProductParser {
 
     private List<BigDecimal> extractAllPrices(String text) {
         List<BigDecimal> prices = new ArrayList<>();
+        
+        // 1. Explicit formatted prices (e.g. ₹479, Rs 479, 479/-, @ 479)
         Matcher matcher = ALL_PRICES_PATTERN.matcher(text);
         while (matcher.find()) {
-            String raw = matcher.group(1).replace(",", "").trim();
-            try {
-                BigDecimal val = new BigDecimal(raw);
-                if (val.compareTo(BigDecimal.ZERO) > 0 && !prices.contains(val)) {
-                    prices.add(val);
-                }
-            } catch (Exception ignored) {
+            String raw = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
+            if (raw != null) {
+                addPrice(prices, raw);
             }
         }
+
+        // 2. Standalone lines containing only a price number (e.g. "479", "🔥 479")
+        Matcher standaloneMatcher = STANDALONE_PRICE_LINE_PATTERN.matcher(text);
+        while (standaloneMatcher.find()) {
+            String raw = standaloneMatcher.group(1);
+            if (raw != null) {
+                addPrice(prices, raw);
+            }
+        }
+
+        // 3. Fallback: If no prices found yet, extract numbers from lines that are not URLs
+        if (prices.isEmpty()) {
+            String[] lines = text.split("\\r?\\n");
+            for (String line : lines) {
+                String trimmed = line.trim();
+                if (trimmed.startsWith("http") || trimmed.contains("://")) continue;
+                Matcher numMatcher = Pattern.compile("\\b([0-9]{2,6})\\b(?!\\s*%)").matcher(trimmed);
+                while (numMatcher.find()) {
+                    addPrice(prices, numMatcher.group(1));
+                }
+            }
+        }
+
         return prices;
+    }
+
+    private void addPrice(List<BigDecimal> prices, String raw) {
+        try {
+            String clean = raw.replace(",", "").trim();
+            BigDecimal val = new BigDecimal(clean);
+            if (val.compareTo(BigDecimal.ZERO) > 0 && !prices.contains(val)) {
+                prices.add(val);
+            }
+        } catch (Exception ignored) {
+        }
     }
 }

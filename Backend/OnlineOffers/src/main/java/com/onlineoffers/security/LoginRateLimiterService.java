@@ -94,4 +94,20 @@ public class LoginRateLimiterService {
         }
         return 0;
     }
+
+    /**
+     * Periodic housekeeping scheduled every 5 minutes to evict expired trackers.
+     */
+    @org.springframework.scheduling.annotation.Scheduled(fixedRate = 300000)
+    public void evictExpiredTrackers() {
+        Instant now = Instant.now();
+        attemptsCache.entrySet().removeIf(entry -> {
+            AttemptTracker tracker = entry.getValue();
+            if (tracker == null) return true;
+            if (tracker.lockedUntil != null && now.isAfter(tracker.lockedUntil)) {
+                return true;
+            }
+            return tracker.lockedUntil == null && tracker.lastAttempt.plusSeconds(lockoutMinutes * 60).isBefore(now);
+        });
+    }
 }

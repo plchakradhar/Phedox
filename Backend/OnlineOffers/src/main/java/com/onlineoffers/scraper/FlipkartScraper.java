@@ -55,8 +55,14 @@ public class FlipkartScraper implements ProductScraper {
 
             // 1. Title
             String title = extractText(doc, "span.VU-ZEz", "span.B_NuCI", "h1._6EBuvT", "h1.yhB1nd", "h1");
-            if (title.isBlank()) {
+            if (title.isBlank() || title.equalsIgnoreCase("Flipkart")) {
                 title = extractMeta(doc, "og:title", "twitter:title");
+            }
+            if (title.isBlank() || title.equalsIgnoreCase("Flipkart")) {
+                Element titleTag = doc.selectFirst("title");
+                if (titleTag != null && !titleTag.text().isBlank()) {
+                    title = titleTag.text().replaceAll("(?i)\\s*[-|:]\\s*Flipkart.*$", "").replaceAll("(?i)^Online Shopping.*?:\\s*", "").trim();
+                }
             }
             data.setName(title.isBlank() ? "Flipkart Deal Offer" : title.trim());
 
@@ -67,6 +73,34 @@ public class FlipkartScraper implements ProductScraper {
                     "div._30jeq3._16J063",
                     "div._30jeq3",
                     "div.CxhGGd");
+
+            // Fallback 1: JSON-LD Structured Data
+            if (currentPrice == null || currentPrice.compareTo(BigDecimal.ZERO) <= 0) {
+                Elements jsonLdScripts = doc.select("script[type='application/ld+json']");
+                for (Element script : jsonLdScripts) {
+                    String json = script.html();
+                    Matcher pMatcher = Pattern.compile("\"price\"\\s*:\\s*\"?([0-9]+(?:\\.[0-9]{1,2})?)\"?").matcher(json);
+                    if (pMatcher.find()) {
+                        try {
+                            currentPrice = new BigDecimal(pMatcher.group(1));
+                            break;
+                        } catch (Exception ignored) {
+                        }
+                    }
+                }
+            }
+
+            // Fallback 2: Meta tags
+            if (currentPrice == null || currentPrice.compareTo(BigDecimal.ZERO) <= 0) {
+                String metaPrice = extractMeta(doc, "price", "product:price:amount");
+                if (!metaPrice.isBlank()) {
+                    try {
+                        currentPrice = new BigDecimal(metaPrice.replaceAll("[^0-9.]", ""));
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+
             data.setCurrentPrice(currentPrice != null ? currentPrice : BigDecimal.ZERO);
 
             // 3. MRP / Original Price

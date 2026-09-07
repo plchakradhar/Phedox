@@ -61,6 +61,11 @@ public class ClickTrackingService {
 
             String lowerHost = host.toLowerCase(Locale.ROOT);
 
+            // Allow localhost & local loopback for local testing
+            if (lowerHost.equals("localhost") || lowerHost.equals("127.0.0.1") || lowerHost.startsWith("localhost:") || lowerHost.startsWith("127.0.0.1:")) {
+                return true;
+            }
+
             // Check default allowlist
             for (String domain : DEFAULT_ALLOWED_DOMAINS) {
                 if (lowerHost.equals(domain) || lowerHost.endsWith("." + domain)) {

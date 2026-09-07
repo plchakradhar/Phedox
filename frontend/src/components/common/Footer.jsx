@@ -113,24 +113,21 @@ export const Footer = () => {
             </p>
             
             <div className="footer-contact-items">
-              <a href="mailto:support@phedox.com" className="footer-contact-item">
+              <a href="mailto:support@phedox.local" className="footer-contact-item">
                 <div className="footer-contact-icon">
                   <Mail size={15} />
                 </div>
-                <span>support@phedox.com</span>
+                <span>support@phedox.local</span>
               </a>
 
               <a
-                href="https://t.me/PhedoxDeals"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#telegram"
                 className="footer-contact-item"
               >
                 <div className="footer-contact-icon telegram-icon">
                   <Send size={14} />
                 </div>
                 <span>Telegram: @PhedoxDeals</span>
-                <ExternalLink size={12} className="footer-external-icon" />
               </a>
             </div>
           </div>

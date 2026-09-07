@@ -10,7 +10,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -20,10 +23,16 @@ public class TelegramUpdateHandler {
 
     private final TelegramService telegramService;
     private final ProductProcessingService productProcessingService;
+    private final TelegramLinkExtractor telegramLinkExtractor;
 
-    public TelegramUpdateHandler(TelegramService telegramService, ProductProcessingService productProcessingService) {
+    public TelegramUpdateHandler(
+            TelegramService telegramService,
+            ProductProcessingService productProcessingService,
+            TelegramLinkExtractor telegramLinkExtractor
+    ) {
         this.telegramService = telegramService;
         this.productProcessingService = productProcessingService;
+        this.telegramLinkExtractor = telegramLinkExtractor;
     }
 
     public void handleUpdate(Update update) {
@@ -56,13 +65,28 @@ public class TelegramUpdateHandler {
             text = message.getCaption();
         }
 
-        if (text == null || text.isBlank()) {
-            log.warn("Telegram message (ID: {}) has no text or caption. Skipping.", message.getMessageId());
-            return;
+        // 1. Extract embedded URLs from MessageEntities (both text and caption)
+        String embeddedUrl = extractUrlFromEntities(message, text);
+
+        // 2. If not found in entities, check inline keyboard buttons
+        if (embeddedUrl == null || embeddedUrl.isBlank()) {
+            embeddedUrl = extractUrlFromReplyMarkup(message);
         }
 
-        // Extract any embedded URLs from MessageEntities (e.g. hyperlinks formatted as [Click Here](url))
-        String embeddedUrl = extractUrlFromEntities(message, text);
+        // 3. If not found in buttons, use TelegramLinkExtractor on text/caption
+        if (embeddedUrl == null || embeddedUrl.isBlank()) {
+            embeddedUrl = telegramLinkExtractor.extractFirstLink(text);
+        }
+
+        // If text is still blank but we have an embedded URL from buttons/entities
+        if ((text == null || text.isBlank()) && embeddedUrl != null && !embeddedUrl.isBlank()) {
+            text = "Deal Link: " + embeddedUrl;
+        }
+
+        if (text == null || text.isBlank()) {
+            log.warn("Telegram message (ID: {}) has no text, caption, or deal link. Skipping.", message.getMessageId());
+            return;
+        }
 
         try {
             TelegramMessageRequest request = new TelegramMessageRequest();
@@ -82,7 +106,11 @@ public class TelegramUpdateHandler {
                 request.setAffiliateUrl(embeddedUrl);
             }
 
-            log.info("Ingesting Telegram deal post from channel: {}, text preview: {}", request.getChannelUsername(), text.length() > 50 ? text.substring(0, 50) + "..." : text);
+            log.info("Ingesting Telegram deal post #{} from channel: {}, link: {}, text preview: {}",
+                    request.getTelegramMessageId(),
+                    request.getChannelUsername(),
+                    request.getAffiliateUrl(),
+                    text.length() > 60 ? text.substring(0, 60) + "..." : text);
 
             TelegramPost post = telegramService.receivePost(request);
             if (post != null && post.getId() != null) {
@@ -96,24 +124,55 @@ public class TelegramUpdateHandler {
     }
 
     private String extractUrlFromEntities(Message message, String fullText) {
-        List<MessageEntity> entities = message.hasEntities() ? message.getEntities() : message.getCaptionEntities();
-        if (entities == null || entities.isEmpty()) {
+        List<MessageEntity> entities = new ArrayList<>();
+        if (message.hasEntities() && message.getEntities() != null) {
+            entities.addAll(message.getEntities());
+        }
+        if (message.getCaptionEntities() != null) {
+            entities.addAll(message.getCaptionEntities());
+        }
+        if (entities.isEmpty()) {
             return null;
         }
 
         for (MessageEntity entity : entities) {
             if ("text_link".equalsIgnoreCase(entity.getType()) && entity.getUrl() != null && !entity.getUrl().isBlank()) {
-                return entity.getUrl();
+                return entity.getUrl().trim();
             } else if ("url".equalsIgnoreCase(entity.getType()) && fullText != null) {
                 try {
                     int start = entity.getOffset();
                     int end = start + entity.getLength();
                     if (start >= 0 && end <= fullText.length()) {
-                        return fullText.substring(start, end);
+                        String raw = fullText.substring(start, end).trim();
+                        if (!raw.isBlank()) {
+                            return raw.startsWith("http") ? raw : "https://" + raw;
+                        }
                     }
                 } catch (Exception ignored) {
                 }
             }
+        }
+        return null;
+    }
+
+    private String extractUrlFromReplyMarkup(Message message) {
+        if (message == null || !message.hasReplyMarkup()) {
+            return null;
+        }
+        try {
+            InlineKeyboardMarkup markup = message.getReplyMarkup();
+            if (markup.getKeyboard() != null) {
+                for (List<InlineKeyboardButton> row : markup.getKeyboard()) {
+                    if (row != null) {
+                        for (InlineKeyboardButton button : row) {
+                            if (button != null && button.getUrl() != null && !button.getUrl().isBlank()) {
+                                return button.getUrl().trim();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {
         }
         return null;
     }

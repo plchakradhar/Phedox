@@ -87,6 +87,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
+        String msg = ex.getMessage() != null ? ex.getMessage() : "";
+        String className = ex.getClass().getName();
+        Throwable rootCause = ex;
+        while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+            rootCause = rootCause.getCause();
+        }
+        String rootMsg = rootCause.getMessage() != null ? rootCause.getMessage() : "";
+
+        // Client aborted / closed connection prematurely while writing response
+        if (className.contains("ClientAbortException")
+                || className.contains("AsyncRequestNotUsableException")
+                || msg.contains("connection was aborted")
+                || msg.contains("Broken pipe")
+                || rootMsg.contains("connection was aborted")
+                || rootMsg.contains("Broken pipe")) {
+            log.debug("Client aborted HTTP connection: {}", msg);
+            return null;
+        }
+
         log.error("Unhandled server exception: {}", ex.getMessage(), ex);
         // Sanitize generic response to prevent internal stack trace / architecture leakage
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.");

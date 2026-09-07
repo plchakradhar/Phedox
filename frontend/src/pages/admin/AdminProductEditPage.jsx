@@ -193,7 +193,7 @@ export const AdminProductEditPage = () => {
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link to={`/products/${id}`} target="_blank" className="btn btn-secondary btn-sm">
+          <Link to={`/products/${id}`} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm">
             <Eye size={14} />
             <span>View Public Page</span>
           </Link>

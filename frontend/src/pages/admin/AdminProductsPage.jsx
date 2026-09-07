@@ -226,6 +226,7 @@ export const AdminProductsPage = () => {
           <Link
             to={`/products/${row.id}`}
             target="_blank"
+            rel="noopener noreferrer"
             className="btn btn-secondary btn-icon"
             title="View on public store"
           >

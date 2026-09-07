@@ -219,7 +219,7 @@ public class SecurityHardeningTests {
             Admin inactiveAdmin = new Admin();
             inactiveAdmin.setUsername("inactive_admin");
             inactiveAdmin.setPassword(passwordEncoder.encode("Password123!"));
-            inactiveAdmin.setEmail("inactive@phedox.com");
+            inactiveAdmin.setEmail("inactive@phedox.local");
             inactiveAdmin.setRole(AdminRole.ADMIN);
             inactiveAdmin.setActive(false);
             adminRepository.save(inactiveAdmin);

@@ -1,4 +1,4 @@
-﻿/* ─── Product Detail Page Design System (Flipkart Standard + Mobile Optimized) ─── */
+/* ─── Product Detail Page Design System (Flipkart Standard + Mobile Optimized) ─── */
 
 .fk-detail-page {
   background-color: #f7f8fa;
@@ -581,14 +581,14 @@
 .fk-highlights-box {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   border-top: 1px solid #f0f0f0;
-  padding-top: 1rem;
+  padding-top: 0.85rem;
 }
 
 .fk-section-heading {
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 0.88rem;
+  font-weight: 700;
   color: #000000;
   margin: 0;
 }
@@ -599,21 +599,21 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .fk-highlights-list li {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #000000;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: #333333;
   line-height: 1.45;
 }
 
 .fk-bullet {
   color: #D90000;
-  font-size: 1.1rem;
+  font-size: 0.88rem;
   line-height: 1;
 }
 
@@ -621,15 +621,15 @@
 .fk-description-box {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   border-top: 1px solid #f0f0f0;
-  padding-top: 1rem;
+  padding-top: 0.85rem;
 }
 
 .fk-description-text {
-  font-size: 0.85rem;
-  color: #333333;
-  line-height: 1.6;
+  font-size: 0.78rem;
+  color: #444444;
+  line-height: 1.55;
   white-space: pre-line;
   margin: 0;
 }
@@ -931,8 +931,9 @@
   }
 
   .fk-product-title {
-    font-size: 1.1rem;
-    line-height: 1.35;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.4;
     overflow-wrap: break-word;
     word-break: break-word;
   }
@@ -961,15 +962,19 @@
     font-size: 0.85rem;
   }
 
-  .fk-services-grid {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
-
   .fk-intel-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.65rem;
+  }
+
+  .fk-section-heading {
+    font-size: 0.82rem;
+  }
+
+  .fk-highlights-list li,
+  .fk-description-text {
+    font-size: 0.74rem;
+    line-height: 1.45;
   }
 
   .fk-reviews-card {
@@ -1042,6 +1047,17 @@
 }
 
 @media (max-width: 480px) {
+  .fk-product-title {
+    font-size: 0.88rem;
+    font-weight: 400;
+  }
+
+  .fk-highlights-list li,
+  .fk-description-text {
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
   .fk-main-image-box {
     height: 280px;
     max-height: 280px;

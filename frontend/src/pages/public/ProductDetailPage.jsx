@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import "./ProductDetailPage.css";
 import { useParams, Link } from 'react-router-dom';
 import {
@@ -7,8 +7,6 @@ import {
   ShieldCheck,
   Zap,
   Tag,
-  Truck,
-  RotateCcw,
   CheckCircle,
   Share2,
   ChevronLeft,
@@ -405,31 +403,6 @@ export const ProductDetailPage = () => {
             <div className="fk-affiliate-note">
               <ShieldCheck size={16} color="#388e3c" />
               <span>Verified Official Link: Directly redirects to {marketplaceName || 'Merchant Store'} with no extra charges.</span>
-            </div>
-
-            {/* Trust & Delivery Badges */}
-            <div className="fk-services-grid">
-              <div className="fk-service-item">
-                <Truck size={20} className="fk-service-icon" />
-                <div>
-                  <div className="fk-service-head">Free Delivery</div>
-                  <div className="fk-service-sub">Standard store shipping</div>
-                </div>
-              </div>
-              <div className="fk-service-item">
-                <RotateCcw size={20} className="fk-service-icon" />
-                <div>
-                  <div className="fk-service-head">Return Policy</div>
-                  <div className="fk-service-sub">7-10 Days Replacement</div>
-                </div>
-              </div>
-              <div className="fk-service-item">
-                <ShieldCheck size={20} className="fk-service-icon" />
-                <div>
-                  <div className="fk-service-head">100% Genuine</div>
-                  <div className="fk-service-sub">Verified brand product</div>
-                </div>
-              </div>
             </div>
 
             {/* Price Intelligence Matrix */}

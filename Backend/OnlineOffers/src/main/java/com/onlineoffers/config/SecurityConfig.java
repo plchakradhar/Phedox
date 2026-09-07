@@ -37,6 +37,10 @@ public class SecurityConfig {
                         .contentTypeOptions(Customizer.withDefaults())
                         .httpStrictTransportSecurity(hsts -> hsts.includeSubDomains(true).maxAgeInSeconds(31536000))
                         .referrerPolicy(rp -> rp.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' http://localhost:* http://127.0.0.1:* https:; frame-ancestors 'none';"
+                        ))
+                        .permissionsPolicy(pp -> pp.policy("camera=(), microphone=(), geolocation=(), payment=(), usb=()"))
                 )
                 .authorizeHttpRequests(auth -> auth
                         // 1. CORS Preflight

@@ -24,7 +24,7 @@ public class OnlineOffersApplication {
     @Value("${admin.initial.password:}")
     private String initialAdminPassword;
 
-    @Value("${admin.initial.email:admin@phedox.com}")
+    @Value("${admin.initial.email:admin@phedox.local}")
     private String initialAdminEmail;
 
     public static void main(String[] args) {

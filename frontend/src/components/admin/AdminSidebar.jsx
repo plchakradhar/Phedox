@@ -78,6 +78,7 @@ export const AdminSidebar = ({ isOpen, onClose }) => {
         <Link
           to="/"
           target="_blank"
+          rel="noopener noreferrer"
           className="admin-nav-item"
           style={{ color: '#38bdf8' }}
         >
