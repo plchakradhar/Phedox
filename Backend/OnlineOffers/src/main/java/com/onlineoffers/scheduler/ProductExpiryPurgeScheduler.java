@@ -79,8 +79,8 @@ public class ProductExpiryPurgeScheduler {
                 // 4. Detach foreign key in TelegramPost (retain post audit history)
                 telegramPostRepository.detachProduct(productId);
 
-                // 5. Detach foreign key in ScrapingLog (retain log history for debugging)
-                scrapingLogRepository.detachProduct(productId);
+                // 5. Delete scraping logs for this expired product
+                scrapingLogRepository.deleteByProductId(productId);
 
                 // 6. Permanently delete product from database
                 productRepository.delete(product);

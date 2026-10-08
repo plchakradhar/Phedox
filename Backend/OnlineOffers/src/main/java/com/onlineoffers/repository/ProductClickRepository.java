@@ -43,4 +43,8 @@ public interface ProductClickRepository extends JpaRepository<ProductClick, Long
     @Modifying
     @Query("DELETE FROM ProductClick pc WHERE pc.product.id IN :productIds")
     void deleteByProductIdIn(@Param("productIds") List<Long> productIds);
+
+    @Modifying
+    @Query("DELETE FROM ProductClick pc WHERE pc.clickedAt < :cutoff")
+    int deleteByClickedAtBefore(@Param("cutoff") java.time.LocalDateTime cutoff);
 }

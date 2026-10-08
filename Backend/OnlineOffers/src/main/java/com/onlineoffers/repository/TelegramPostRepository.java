@@ -40,4 +40,8 @@ public interface TelegramPostRepository extends JpaRepository<TelegramPost, Long
     @Modifying
     @Query("UPDATE TelegramPost tp SET tp.product = null WHERE tp.product.id IN :productIds")
     void detachProductIn(@Param("productIds") List<Long> productIds);
+
+    @Modifying
+    @Query("DELETE FROM TelegramPost tp WHERE tp.receivedAt < :cutoff AND (tp.processed = true OR tp.status = 'FAILED')")
+    int deleteProcessedOrFailedPostsBefore(@Param("cutoff") java.time.LocalDateTime cutoff);
 }

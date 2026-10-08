@@ -23,4 +23,12 @@ public interface ScrapingLogRepository extends JpaRepository<ScrapingLog, Long> 
     @Modifying
     @Query("UPDATE ScrapingLog sl SET sl.product = null WHERE sl.product.id IN :productIds")
     void detachProductIn(@Param("productIds") List<Long> productIds);
+
+    @Modifying
+    @Query("DELETE FROM ScrapingLog sl WHERE sl.product.id = :productId")
+    void deleteByProductId(@Param("productId") Long productId);
+
+    @Modifying
+    @Query("DELETE FROM ScrapingLog sl WHERE sl.createdAt < :cutoff")
+    int deleteByCreatedAtBefore(@Param("cutoff") java.time.LocalDateTime cutoff);
 }
